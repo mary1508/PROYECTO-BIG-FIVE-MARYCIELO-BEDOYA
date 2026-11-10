@@ -1,0 +1,36 @@
+{% extends "admin/panel.html" %}
+{% block titulo %}Resumen{% endblock %}
+{% block cuerpo %}
+<div class="encabezado-pagina">
+  <div><h1>Resumen del estudio</h1><p>Estado de cada etapa del flujo, de la recolección al dashboard.</p></div>
+</div>
+<div class="rejilla cuatro">
+  <div class="tarjeta indicador"><div class="valor">{{ resumen.participantes_completos }}</div><div class="nombre">Formularios completos</div></div>
+  <div class="tarjeta indicador"><div class="valor">{{ resumen.participantes_en_progreso }}</div><div class="nombre">Formularios en progreso</div></div>
+  <div class="tarjeta indicador"><div class="valor">{{ resumen.reportes }}</div><div class="nombre">Reportes de métricas cargados</div></div>
+  <div class="tarjeta indicador"><div class="valor">{{ resumen.emparejamiento.n_emparejados if resumen.emparejamiento else '—' }}</div><div class="nombre">Participantes emparejados</div></div>
+</div>
+
+<div class="tarjeta" style="margin-top:20px">
+  <h2>Flujo de trabajo</h2>
+  <div class="contenedor-tabla"><table>
+    <thead><tr><th>Etapa</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>1. Recolección de formularios</td>
+        <td>{% if resumen.participantes_completos %}<span class="etiqueta exito">{{ resumen.participantes_completos }} completos</span>{% else %}<span class="etiqueta aviso">Sin respuestas</span>{% endif %}</td>
+        <td><a href="{{ url_for('participante.bienvenida') }}" target="_blank" rel="noopener">Ver formulario público</a></td></tr>
+      <tr><td>2. Carga de reportes de métricas</td>
+        <td>{% if resumen.reportes %}<span class="etiqueta exito">{{ resumen.reportes }} reporte(s)</span>{% else %}<span class="etiqueta aviso">Pendiente</span>{% endif %}</td>
+        <td><a href="{{ url_for('administracion.reportes') }}">Cargar reporte</a></td></tr>
+      <tr><td>3. Emparejamiento por código anónimo</td>
+        <td>{% if resumen.emparejamiento %}<span class="etiqueta exito">{{ resumen.emparejamiento.n_emparejados }} emparejados</span> {% if resumen.emparejamiento.n_sin_coincidencia %}<span class="etiqueta aviso">{{ resumen.emparejamiento.n_sin_coincidencia }} sin coincidencia</span>{% endif %}{% else %}<span class="etiqueta">Sin ejecutar</span>{% endif %}</td>
+        <td><a href="{{ url_for('administracion.emparejamiento') }}">Abrir</a></td></tr>
+      <tr><td>4. Análisis estadístico</td>
+        <td>{% if resumen.analisis %}{% if resumen.analisis.estado == 'completo' %}<span class="etiqueta exito">Completo · n = {{ resumen.analisis.n_muestra }}</span>{% else %}<span class="etiqueta aviso">Datos insuficientes (mínimo {{ minimo }})</span>{% endif %}{% else %}<span class="etiqueta">Sin ejecutar</span>{% endif %}</td>
+        <td><a href="{{ url_for('administracion.analisis') }}">Abrir</a></td></tr>
+      <tr><td>5. Dashboard de resultados</td>
+        <td>{% if resumen.analisis %}<span class="etiqueta principal">Disponible</span>{% else %}<span class="etiqueta">Requiere análisis</span>{% endif %}</td>
+        <td><a href="{{ url_for('administracion.dashboard') }}">Abrir</a></td></tr>
+    </tbody></table></div>
+</div>
+{% endblock %}

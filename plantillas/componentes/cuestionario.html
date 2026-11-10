@@ -1,0 +1,42 @@
+{# Formulario Likert reutilizable: BFI-44 y escala de rendimiento. Variables: items, opciones, respuestas, faltantes, total, codigo, titulo, introduccion, enunciado_previo, texto_boton #}
+<div class="progreso-fijo sin-imprimir">
+  <div class="contenedor angosto">
+    <span class="texto"><span id="contador-respondidas">0</span> de {{ total }}</span>
+    <div class="pista" role="progressbar" aria-label="Avance" aria-valuemin="0" aria-valuemax="{{ total }}" aria-valuenow="0" id="pista-avance"><div id="barra-avance"></div></div>
+    <span class="codigo-chip" title="Tu código anónimo">{{ codigo }}</span>
+  </div>
+</div>
+<div class="contenedor angosto pagina">
+  <h1>{{ titulo }}</h1>
+  <p>{{ introduccion }}</p>
+  {% if faltantes %}
+    <div class="mensaje error" role="alert">Faltan {{ faltantes|length }} afirmación(es) por responder: {{ faltantes|join(', ') }}. Están marcadas en rojo.</div>
+  {% endif %}
+  <form method="post" id="formulario-likert" data-total="{{ total }}" novalidate>
+    <input type="hidden" name="token_csrf" value="{{ token_csrf }}">
+    <p class="leyenda-escala"><strong>{{ enunciado_previo }}</strong></p>
+    {% for item in items %}
+      {% set numero = item[0] %}
+      <fieldset class="pregunta escala-likert-grupo {{ 'falta' if numero in faltantes }}" id="pregunta-{{ numero }}" style="border:1px solid var(--linea)">
+        <legend class="solo-lectores">Afirmación {{ numero }}</legend>
+        <p class="enunciado"><span class="numero">{{ numero }}.</span>{{ item[1] }}</p>
+        {% if numero in faltantes %}<p class="alerta" role="alert">Selecciona una opción.</p>{% endif %}
+        <div class="escala-likert">
+          {% for valor, texto in opciones %}
+            <label>
+              <input type="radio" name="item_{{ numero }}" value="{{ valor }}" {{ 'checked' if respuestas.get(numero) == valor }}>
+              <span class="opcion"><b>{{ valor }}</b><span>{{ texto }}</span></span>
+            </label>
+          {% endfor %}
+        </div>
+      </fieldset>
+    {% endfor %}
+    <div class="pie-formulario sin-imprimir">
+      <div class="contenedor angosto">
+        <span class="leyenda-escala" id="estado-envio">Responde todas las afirmaciones para continuar.</span>
+        <button class="boton" type="submit">{{ texto_boton }}</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script src="{{ url_for('static', filename='js/cuestionario.js') }}" defer></script>

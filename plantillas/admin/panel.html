@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block navegacion %}
+  {% set ep = request.endpoint %}
+  <nav class="navegacion" aria-label="Panel de la investigadora">
+    <a href="{{ url_for('administracion.inicio') }}" {% if ep == 'administracion.inicio' %}aria-current="page"{% endif %}>Resumen</a>
+    <a href="{{ url_for('administracion.equipos') }}" {% if ep == 'administracion.equipos' %}aria-current="page"{% endif %}>Equipos</a>
+    <a href="{{ url_for('administracion.reportes') }}" {% if ep == 'administracion.reportes' %}aria-current="page"{% endif %}>Reportes</a>
+    <a href="{{ url_for('administracion.emparejamiento') }}" {% if ep == 'administracion.emparejamiento' %}aria-current="page"{% endif %}>Emparejamiento</a>
+    <a href="{{ url_for('administracion.analisis') }}" {% if ep == 'administracion.analisis' %}aria-current="page"{% endif %}>Análisis</a>
+    <a href="{{ url_for('administracion.dashboard') }}" {% if ep == 'administracion.dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+    <span class="usuario">{{ nombre_usuario }}</span>
+    <form method="post" action="{{ url_for('administracion.salir') }}" style="display:inline">
+      <input type="hidden" name="token_csrf" value="{{ token_csrf }}">
+      <button type="submit">Cerrar sesión</button>
+    </form>
+  </nav>
+{% endblock %}
+{% block contenido %}
+<div class="contenedor pagina">
+  {% include "componentes/mensajes.html" %}
+  {% block cuerpo %}{% endblock %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Plataforma Big Five{% endblock %} · Big Five y rendimiento laboral</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+  <link rel="icon" href="data:,">
+  {% block cabeza %}{% endblock %}
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  {% block barra %}
+  <header class="barra">
+    <div class="contenedor">
+      <a class="marca" href="{{ url_for('participante.bienvenida') }}">
+        {% include "componentes/logo.html" %}
+        <span>Big Five y rendimiento</span>
+      </a>
+      {% block navegacion %}{% endblock %}
+    </div>
+  </header>
+  {% endblock %}
+  <main id="contenido">
+    {% block contenido %}{% endblock %}
+  </main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

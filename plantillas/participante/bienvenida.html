@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block titulo %}Bienvenida{% endblock %}
+{% block contenido %}
+<section class="portada">
+  <div class="contenedor">
+    <h1>¿Cómo trabajas y cómo te describes?</h1>
+    <p>Estudio académico sobre la relación entre los rasgos de personalidad y el desempeño en equipos de desarrollo de software. Tu participación es anónima y toma unos 15 minutos.</p>
+    <div class="cinco-dimensiones" aria-label="Dimensiones que se evalúan">
+      <span style="background:var(--apertura)">Apertura</span>
+      <span style="background:var(--responsabilidad)">Responsabilidad</span>
+      <span style="background:var(--extraversion)">Extraversión</span>
+      <span style="background:var(--amabilidad)">Amabilidad</span>
+      <span style="background:var(--neuroticismo)">Neuroticismo</span>
+    </div>
+  </div>
+</section>
+<div class="contenedor angosto portada-tarjeta pagina" style="padding-top:0">
+  <div class="tarjeta">
+    {% if error %}<div class="mensaje error" role="alert">{{ error }}</div>{% endif %}
+    <h2>Antes de empezar</h2>
+    <ol class="pasos">
+      <li><strong>Tu perfil</strong>Rol, años de experiencia y equipo.</li>
+      <li><strong>Cuestionario BFI-44</strong>44 afirmaciones sobre cómo te ves.</li>
+      <li><strong>Escala de rendimiento</strong>8 afirmaciones sobre tu desempeño.</li>
+    </ol>
+    <p>Responde con sinceridad: no hay respuestas correctas ni incorrectas. Se te asignará un código aleatorio; no pedimos tu nombre, correo ni ningún dato que te identifique. Los resultados se analizan solo de forma agregada.</p>
+    <form method="post" action="{{ url_for('participante.iniciar') }}">
+      <input type="hidden" name="token_csrf" value="{{ token_csrf }}">
+      <div class="campo">
+        <label class="casilla"><input type="checkbox" name="consentimiento" value="si" required>
+          <span>He leído la información y acepto participar de forma voluntaria. Entiendo que puedo abandonar el cuestionario en cualquier momento.</span></label>
+      </div>
+      <button class="boton" type="submit">Comenzar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

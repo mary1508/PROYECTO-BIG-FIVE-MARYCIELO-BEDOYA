@@ -1,0 +1,27 @@
+{% extends "admin/panel.html" %}
+{% block titulo %}Análisis estadístico{% endblock %}
+{% block cuerpo %}
+<div class="encabezado-pagina"><div><h1>Análisis estadístico</h1><p>Correlaciones Big Five–rendimiento y comparaciones por rol y experiencia.</p></div>
+  <form method="post"><input type="hidden" name="token_csrf" value="{{ token_csrf }}"><button class="boton" type="submit">Ejecutar análisis</button></form></div>
+{% if precondicion %}{% include "admin/precondicion.html" %}{% endif %}
+{% if ultimo %}
+  {% if ultimo.estado != 'completo' %}
+    <div class="mensaje aviso" role="status"><strong>Muestra insuficiente.</strong> Hay {{ ultimo.n_muestra }} registros emparejados y se requieren al menos {{ minimo }} para el análisis inferencial. Amplía la muestra y vuelve a ejecutar.</div>
+  {% endif %}
+  <div class="rejilla tres">
+    <div class="tarjeta indicador"><div class="valor">{{ ultimo.n_muestra }}</div><div class="nombre">Registros analizados</div></div>
+    <div class="tarjeta indicador"><div class="valor">{{ ultimo.correlaciones|length }}</div><div class="nombre">Correlaciones calculadas</div></div>
+    <div class="tarjeta indicador"><div class="valor">{{ ultimo.subgrupos|length }}</div><div class="nombre">Comparaciones por subgrupo</div></div>
+  </div>
+  {% if advertencias %}
+  <div class="tarjeta" style="margin-top:20px"><h2>Advertencias</h2>
+    <ul style="margin:0;padding-left:20px">{% for a in advertencias %}<li>{{ a }}</li>{% endfor %}</ul></div>
+  {% endif %}
+  <div class="acciones" style="margin-top:20px">
+    <a class="boton" href="{{ url_for('administracion.dashboard') }}">Ver dashboard</a>
+    <span class="ayuda" style="align-self:center">Ejecutado el {{ ultimo.fecha_ejecucion.strftime('%d/%m/%Y %H:%M') }}. Los resultados quedan guardados.</span>
+  </div>
+{% elif not precondicion %}
+  <div class="tarjeta vacio"><h3>Aún no hay análisis</h3><p style="margin-inline:auto">Ejecuta el emparejamiento y luego el análisis.</p></div>
+{% endif %}
+{% endblock %}

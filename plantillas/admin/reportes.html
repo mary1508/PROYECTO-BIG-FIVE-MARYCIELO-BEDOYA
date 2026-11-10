@@ -1,0 +1,52 @@
+{% extends "admin/panel.html" %}
+{% block titulo %}Carga de reportes{% endblock %}
+{% block cuerpo %}
+<div class="encabezado-pagina"><div><h1>Carga de reportes de métricas</h1><p>Sube el sprint report o velocity report exportado de Jira o Azure DevOps.</p></div>
+  <a class="boton secundario" href="{{ url_for('administracion.plantilla_reporte') }}">Descargar plantilla de referencia</a></div>
+<div class="rejilla dos" style="grid-template-columns:1fr 1fr;align-items:start">
+  <form class="tarjeta" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="token_csrf" value="{{ token_csrf }}">
+    <h2>Nuevo reporte</h2>
+    {% if errores %}
+      <div class="mensaje error" role="alert"><strong>No se cargó el reporte.</strong>
+        <ul>{% for e in errores %}<li>{{ e }}</li>{% endfor %}</ul>
+        <p style="margin:8px 0 0">Corrige el archivo y vuelve a intentarlo, o descarga la plantilla de referencia.</p></div>
+    {% endif %}
+    <div class="campo"><label for="id_equipo">Equipo</label>
+      <select id="id_equipo" name="id_equipo" required>
+        <option value="">Selecciona un equipo</option>
+        {% for empresa in empresas %}<optgroup label="{{ empresa.nombre }}">
+          {% for eq in empresa.equipos %}<option value="{{ eq.id_equipo }}" {{ 'selected' if datos.get('id_equipo') == eq.id_equipo|string }}>{{ eq.nombre }}</option>{% endfor %}
+        </optgroup>{% endfor %}
+      </select></div>
+    <div class="fila-campos">
+      <div class="campo"><label for="periodo_inicio">Inicio del periodo</label><input id="periodo_inicio" name="periodo_inicio" type="date" value="{{ datos.get('periodo_inicio','') }}" required></div>
+      <div class="campo"><label for="periodo_fin">Fin del periodo</label><input id="periodo_fin" name="periodo_fin" type="date" value="{{ datos.get('periodo_fin','') }}" required></div>
+    </div>
+    <div class="campo"><label for="archivo">Archivo (.csv o .xlsx, máx. 5 MB)</label>
+      <input id="archivo" name="archivo" type="file" accept=".csv,.xlsx" required>
+      <div class="ayuda">Cubre entre 2 y 3 sprints (60–90 días aprox.).</div></div>
+    <button class="boton" type="submit">Validar y cargar</button>
+  </form>
+  <div class="tarjeta">
+    <h2>Estructura esperada</h2>
+    <p>El archivo debe tener una fila por participante y estas columnas:</p>
+    <div class="contenedor-tabla"><table><tbody>
+      {% for c in columnas %}<tr><td><code>{{ c }}</code></td></tr>{% endfor %}
+    </tbody></table></div>
+    <p class="ayuda" style="margin-top:12px">Se aceptan nombres equivalentes comunes (por ejemplo <code>cycle_time</code>, <code>story_points_completed</code>). Si el archivo tiene un error, no se carga nada.</p>
+  </div>
+</div>
+<div class="tarjeta" style="margin-top:20px">
+  <h2>Historial de cargas</h2>
+  {% if historial %}
+  <div class="contenedor-tabla"><table>
+    <thead><tr><th>Fecha</th><th>Equipo</th><th>Periodo</th><th>Archivo</th><th class="numero">Registros</th></tr></thead>
+    <tbody>{% for r in historial %}
+      <tr><td>{{ r.fecha_carga.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ r.equipo.empresa.nombre }} · {{ r.equipo.nombre }}</td>
+        <td>{{ r.periodo_inicio.strftime('%d/%m/%Y') }} – {{ r.periodo_fin.strftime('%d/%m/%Y') }}</td>
+        <td>{{ r.nombre_archivo }} <span class="etiqueta">{{ r.formato }}</span></td><td class="numero">{{ r.registros_procesados }}</td></tr>
+    {% endfor %}</tbody></table></div>
+  {% else %}<div class="vacio"><h3>Aún no hay reportes</h3><p style="margin-inline:auto">Carga el primer reporte para poder emparejar los datos.</p></div>{% endif %}
+</div>
+{% endblock %}

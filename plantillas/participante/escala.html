@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Escala de rendimiento{% endblock %}
+{% block contenido %}
+  {% set titulo = "Tu rendimiento en el trabajo" %}
+  {% set introduccion = "Último paso. Piensa en tu trabajo de los últimos meses e indica qué tan de acuerdo estás con cada afirmación." %}
+  {% set enunciado_previo = "Durante los últimos meses…" %}
+  {% set texto_boton = "Enviar respuestas" %}
+  {% include "componentes/cuestionario.html" %}
+{% endblock %}

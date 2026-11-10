@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block titulo %}Cuestionario BFI-44{% endblock %}
+{% block contenido %}
+  {% set titulo = "Cuestionario de personalidad" %}
+  {% set introduccion = "Indica qué tan de acuerdo estás con cada afirmación. Piensa en cómo eres en general, no en un día concreto." %}
+  {% set enunciado_previo = "Me veo a mí mismo/a como alguien que…" %}
+  {% set texto_boton = "Guardar y continuar" %}
+  {% include "componentes/cuestionario.html" %}
+{% endblock %}

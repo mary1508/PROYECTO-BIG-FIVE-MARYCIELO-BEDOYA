@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titulo %}Ingreso de la investigadora{% endblock %}
+{% block barra %}{% endblock %}
+{% block contenido %}
+<div class="pantalla-ingreso">
+  <aside class="ingreso-lado">
+    <div class="marca">{% include "componentes/logo.html" %}<span>Big Five y rendimiento</span></div>
+    <div>
+      <h1>Panel de la investigadora</h1>
+      <p>Carga reportes de métricas, empareja datos por código anónimo y revisa los resultados del análisis.</p>
+    </div>
+    <p style="margin:0;font-size:.85rem">Acceso restringido. Los participantes responden el formulario desde el enlace público.</p>
+  </aside>
+  <section class="ingreso-formulario">
+    <form method="post" novalidate>
+      <input type="hidden" name="token_csrf" value="{{ token_csrf }}">
+      <h2>Iniciar sesión</h2>
+      {% include "componentes/mensajes.html" %}
+      {% if error %}<div class="mensaje error" role="alert">{{ error }}</div>{% endif %}
+      <div class="campo"><label for="usuario">Usuario</label>
+        <input id="usuario" name="usuario" type="text" autocomplete="username" required autofocus></div>
+      <div class="campo"><label for="contrasena">Contraseña</label>
+        <input id="contrasena" name="contrasena" type="password" autocomplete="current-password" required></div>
+      <button class="boton" type="submit" style="width:100%">Ingresar</button>
+      <p class="ayuda" style="margin-top:14px">La sesión se cierra tras 30 minutos sin actividad.</p>
+    </form>
+  </section>
+</div>
+{% endblock %}

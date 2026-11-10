@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block titulo %}Gracias{% endblock %}
+{% block contenido %}
+<div class="contenedor angosto pagina gracias">
+  <div class="sello" aria-hidden="true">
+    <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+  </div>
+  <h1>Formulario completo. Gracias por participar</h1>
+  <p>Registramos tus respuestas con este código anónimo. Si tu líder de equipo entrega los reportes de métricas, se usarán únicamente con este código.</p>
+  <div class="codigo-grande" aria-label="Tu código anónimo">{{ participante.codigo_anonimo }}</div>
+  <p class="ayuda" style="margin-inline:auto">Guárdalo solo si quieres consultar con la investigadora qué datos se asociaron a tu código.</p>
+</div>
+{% endblock %}

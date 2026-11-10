@@ -1,0 +1,31 @@
+{% extends "admin/panel.html" %}
+{% block titulo %}Equipos{% endblock %}
+{% block cuerpo %}
+<div class="encabezado-pagina"><div><h1>Empresas y equipos</h1><p>Los participantes eligen su equipo en el formulario; los reportes de métricas se asocian a un equipo.</p></div></div>
+<div class="rejilla dos" style="grid-template-columns:1.4fr 1fr;align-items:start">
+  <div>
+    {% for empresa in empresas %}
+    <div class="tarjeta">
+      <h2>{{ empresa.nombre }}</h2>
+      <div class="contenedor-tabla"><table>
+        <thead><tr><th>Equipo</th><th>Metodología</th><th class="numero">Participantes</th></tr></thead>
+        <tbody>
+          {% for equipo in empresa.equipos %}
+            <tr><td>{{ equipo.nombre }}</td><td><span class="etiqueta">{{ equipo.metodologia_trabajo }}</span></td><td class="numero">{{ equipo.participantes|length }}</td></tr>
+          {% else %}<tr><td colspan="3" class="vacio">Sin equipos registrados.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </div>
+    {% endfor %}
+  </div>
+  <form class="tarjeta" method="post">
+    <input type="hidden" name="token_csrf" value="{{ token_csrf }}">
+    <h2>Registrar equipo</h2>
+    <div class="campo"><label for="id_empresa">Empresa</label>
+      <select id="id_empresa" name="id_empresa" required>{% for e in empresas %}<option value="{{ e.id_empresa }}">{{ e.nombre }}</option>{% endfor %}</select></div>
+    <div class="campo"><label for="nombre">Nombre del equipo</label><input id="nombre" name="nombre" type="text" maxlength="80" required></div>
+    <div class="campo"><label for="metodologia">Metodología de trabajo</label>
+      <select id="metodologia" name="metodologia">{% for m in metodologias %}<option>{{ m }}</option>{% endfor %}</select></div>
+    <button class="boton" type="submit">Registrar equipo</button>
+  </form>
+</div>
+{% endblock %}

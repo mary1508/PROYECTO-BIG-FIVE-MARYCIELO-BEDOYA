@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block titulo %}Tu perfil{% endblock %}
+{% block contenido %}
+<div class="contenedor angosto pagina">
+  <h1>Tu perfil profesional</h1>
+  <p>Usamos estos datos solo para comparar grupos (por rol y experiencia). No te identifican.</p>
+  <form class="tarjeta" method="post" novalidate>
+    <input type="hidden" name="token_csrf" value="{{ token_csrf }}">
+    {% if errores %}
+      <div class="mensaje error" role="alert">Revisa lo siguiente:
+        <ul>{% for e in errores %}<li>{{ e }}</li>{% endfor %}</ul></div>
+    {% endif %}
+    <div class="campo">
+      <label for="id_equipo">Empresa y equipo</label>
+      <select id="id_equipo" name="id_equipo" required>
+        <option value="">Selecciona tu equipo</option>
+        {% for empresa in empresas %}
+          <optgroup label="{{ empresa.nombre }}">
+            {% for equipo in empresa.equipos %}
+              <option value="{{ equipo.id_equipo }}" {{ 'selected' if datos.get('id_equipo') == equipo.id_equipo|string }}>{{ equipo.nombre }} · {{ equipo.metodologia_trabajo }}</option>
+            {% endfor %}
+          </optgroup>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="fila-campos">
+      <div class="campo">
+        <label for="rol">Rol profesional</label>
+        <select id="rol" name="rol" required>
+          <option value="">Selecciona tu rol</option>
+          {% for rol in roles %}<option {{ 'selected' if datos.get('rol') == rol }}>{{ rol }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="campo">
+        <label for="anios_experiencia">Años de experiencia en desarrollo</label>
+        <input id="anios_experiencia" name="anios_experiencia" type="number" min="0" max="50" inputmode="numeric" value="{{ datos.get('anios_experiencia', '') }}" required>
+        <div class="ayuda">Redondea al año más cercano.</div>
+      </div>
+    </div>
+    <button class="boton" type="submit">Continuar al cuestionario</button>
+  </form>
+</div>
+{% endblock %}

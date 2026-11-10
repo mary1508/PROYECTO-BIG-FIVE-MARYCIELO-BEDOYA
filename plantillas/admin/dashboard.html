@@ -1,0 +1,84 @@
+{% extends "admin/panel.html" %}
+{% block titulo %}Dashboard{% endblock %}
+{% block cuerpo %}
+<div class="encabezado-pagina">
+  <div><h1>Dashboard de resultados</h1><p>Resultados guardados del último análisis.</p></div>
+  {% if ultimo %}<div class="acciones sin-imprimir" style="margin:0"><button class="boton secundario" type="button" id="boton-pdf">Exportar a PDF</button></div>{% endif %}
+</div>
+{% if precondicion %}
+  {% include "admin/precondicion.html" %}
+{% else %}
+<form class="tarjeta filtros-tarjeta" id="filtros" aria-label="Filtros del dashboard">
+  <div class="filtros">
+    <div class="campo"><label for="f-dimension">Dimensión Big Five</label>
+      <select id="f-dimension" name="dimension"><option value="todas">Todas</option>{% for clave, nombre in dimensiones.items() %}<option value="{{ clave }}">{{ nombre }}</option>{% endfor %}</select></div>
+    <div class="campo"><label for="f-variable">Indicador de rendimiento</label>
+      <select id="f-variable" name="variable">{% for clave in ['rendimiento_autopercibido','story_points','issues_completados','bugs_resueltos','tiempo_ciclo_dias'] %}<option value="{{ clave }}">{{ variables[clave] }}</option>{% endfor %}</select></div>
+    <div class="campo"><label for="f-rol">Rol</label>
+      <select id="f-rol" name="rol"><option value="todos">Todos</option>{% for r in roles %}<option>{{ r }}</option>{% endfor %}</select></div>
+    <div class="campo"><label for="f-experiencia">Experiencia</label>
+      <select id="f-experiencia" name="experiencia"><option value="todos">Todas</option>{% for e in experiencias %}<option>{{ e }}</option>{% endfor %}</select></div>
+    <div class="campo"><label for="f-metodologia">Metodología</label>
+      <select id="f-metodologia" name="metodologia"><option value="todos">Todas</option>{% for m in metodologias %}<option>{{ m }}</option>{% endfor %}</select></div>
+    <button class="boton secundario" type="reset" id="limpiar">Limpiar</button>
+  </div>
+</form>
+
+<div id="avisos" style="margin-top:20px"></div>
+<div id="tablero" style="margin-top:20px">
+  <div class="rejilla cuatro" id="indicadores"></div>
+
+  <div class="tarjeta">
+    <div class="grafico-cabecera">
+      <div><h3>Correlación con <span id="nombre-variable"></span></h3><p>Coeficiente por dimensión. Barra sólida: p &lt; 0,05; barra clara: no significativo.</p></div>
+      <button class="boton secundario pequeno sin-imprimir" type="button" data-exportar="grafico-correlaciones">Descargar PNG</button>
+    </div>
+    <div class="grafico"><canvas id="grafico-correlaciones" role="img" aria-label="Gráfico de correlaciones"></canvas></div>
+    <div class="contenedor-tabla" style="margin-top:14px"><table id="tabla-correlaciones"></table></div>
+  </div>
+
+  <div class="tarjeta" id="tarjeta-dispersion" hidden>
+    <div class="grafico-cabecera">
+      <div><h3 id="titulo-dispersion"></h3><p>Cada punto es un participante emparejado.</p></div>
+      <button class="boton secundario pequeno sin-imprimir" type="button" data-exportar="grafico-dispersion">Descargar PNG</button>
+    </div>
+    <div class="grafico alto"><canvas id="grafico-dispersion" role="img" aria-label="Diagrama de dispersión"></canvas></div>
+  </div>
+
+  <div class="tarjeta">
+    <div class="grafico-cabecera">
+      <div><h3>Puntaje medio por grupo</h3><p>Escala de 1 a 5, con desviación estándar en la tabla.</p></div>
+      <div class="sin-imprimir" style="display:flex;gap:8px;align-items:center">
+        <label for="agrupar-por" class="solo-lectores">Agrupar por</label>
+        <select id="agrupar-por" style="width:auto"><option value="rol">Por rol</option><option value="experiencia">Por experiencia</option><option value="metodologia">Por metodología</option></select>
+        <button class="boton secundario pequeno" type="button" data-exportar="grafico-grupos">PNG</button>
+      </div>
+    </div>
+    <div class="grafico alto"><canvas id="grafico-grupos" role="img" aria-label="Medias por grupo"></canvas></div>
+  </div>
+
+  <div class="rejilla tres" style="margin-top:20px">
+    <div class="tarjeta"><h3>Participantes por rol</h3><div class="grafico" style="height:240px"><canvas id="grafico-frec-rol"></canvas></div></div>
+    <div class="tarjeta"><h3>Por experiencia</h3><div class="grafico" style="height:240px"><canvas id="grafico-frec-experiencia"></canvas></div></div>
+    <div class="tarjeta"><h3>Por metodología</h3><div class="grafico" style="height:240px"><canvas id="grafico-frec-metodologia"></canvas></div></div>
+  </div>
+
+  <div class="tarjeta">
+    <h3>Comparación entre subgrupos</h3>
+    <p class="ayuda">Prueba de Kruskal-Wallis. Filas resaltadas: p &lt; 0,05.</p>
+    <div class="contenedor-tabla"><table id="tabla-subgrupos"></table></div>
+  </div>
+
+  <div class="tarjeta">
+    <h3>Estadística descriptiva de la muestra</h3>
+    <div class="contenedor-tabla"><table id="tabla-descriptiva"></table></div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if not precondicion %}
+<script src="{{ url_for('static', filename='js/chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endif %}
+{% endblock %}

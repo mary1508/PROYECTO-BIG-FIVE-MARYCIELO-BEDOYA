@@ -1,0 +1,5 @@
+<div class="tarjeta vacio" role="status">
+  <h3>{{ precondicion.mensaje }}</h3>
+  <p style="margin-inline:auto">{{ precondicion.accion }}</p>
+  {% if precondicion.enlace != '/' %}<a class="boton" href="{{ precondicion.enlace }}">Ir al paso anterior</a>{% endif %}
+</div>

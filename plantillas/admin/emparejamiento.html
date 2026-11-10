@@ -1,0 +1,24 @@
+{% extends "admin/panel.html" %}
+{% block titulo %}Emparejamiento{% endblock %}
+{% block cuerpo %}
+<div class="encabezado-pagina"><div><h1>Emparejamiento de datos</h1><p>Une formulario y métricas usando solo el código anónimo.</p></div>
+  <form method="post"><input type="hidden" name="token_csrf" value="{{ token_csrf }}"><button class="boton" type="submit">Ejecutar emparejamiento</button></form></div>
+{% if precondicion %}{% include "admin/precondicion.html" %}{% endif %}
+{% if ultimo %}
+  <div class="rejilla tres">
+    <div class="tarjeta indicador"><div class="valor" style="color:var(--exito)">{{ ultimo.n_emparejados }}</div><div class="nombre">Participantes emparejados</div></div>
+    <div class="tarjeta indicador"><div class="valor" style="color:{{ 'var(--aviso)' if ultimo.n_sin_coincidencia else 'var(--tinta)' }}">{{ ultimo.n_sin_coincidencia }}</div><div class="nombre">Códigos sin coincidencia (excluidos)</div></div>
+    <div class="tarjeta indicador"><div class="valor" style="font-size:1.2rem;padding-top:10px">{{ ultimo.fecha_ejecucion.strftime('%d/%m/%Y %H:%M') }}</div><div class="nombre">Última ejecución</div></div>
+  </div>
+  <div class="tarjeta" style="margin-top:20px">
+    <h2>Códigos excluidos</h2>
+    {% if excluidos %}
+      <p>Estos códigos aparecen en una sola fuente y no entran al análisis. Verifica con el líder del equipo si hubo un error de transcripción.</p>
+      <div class="contenedor-tabla"><table><thead><tr><th>Código</th><th>Motivo</th></tr></thead>
+        <tbody>{% for e in excluidos %}<tr><td><code>{{ e.codigo }}</code></td><td><span class="etiqueta aviso">{{ e.motivo }}</span></td></tr>{% endfor %}</tbody></table></div>
+    {% else %}<div class="mensaje exito" style="margin:0">Todos los códigos coinciden entre formulario y reportes.</div>{% endif %}
+  </div>
+{% elif not precondicion %}
+  <div class="tarjeta vacio"><h3>Aún no se ejecutó el emparejamiento</h3><p style="margin-inline:auto">Necesitas formularios completos y al menos un reporte cargado.</p></div>
+{% endif %}
+{% endblock %}
